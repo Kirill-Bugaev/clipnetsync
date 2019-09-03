@@ -5,7 +5,7 @@ Config placed in `config.lua`. Client usage `lua client.lua <server ip address>`
 
 ![My home multihost system](https://github.com/Kirill-Bugaev/clipnetsync/blob/master/screenshots/my-home-system.jpg)
 
-#TODO
+## TODO
 * add clipboard sharing for all X-DISPLAYS
 * add ssl support
 * add daemon mode

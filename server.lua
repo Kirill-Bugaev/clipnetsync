@@ -1,5 +1,5 @@
 local socket  = require "socket"
-local ssl     = require "ssl"
+--local ssl     = require "ssl"
 local common = require "common"
 
 local port, connto, loopto, tls_params, sel = require("config")()

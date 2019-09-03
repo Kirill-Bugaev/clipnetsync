@@ -5,9 +5,10 @@ Config placed in `config.lua`. Client usage `lua client.lua <server ip address>`
 
 ![My home multihost system](https://github.com/Kirill-Bugaev/clipnetsync/blob/master/screenshots/my-home-system.jpg)
 
-TODO
+#TODO
 * add clipboard sharing for all X-DISPLAYS
 * add ssl support
+* add daemon mode
 
 [lua-socket]: https://www.archlinux.org/packages/community/x86_64/lua-socket/
 [xsel]: https://www.archlinux.org/packages/community/x86_64/xsel/

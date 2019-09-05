@@ -43,7 +43,7 @@ can't bind socket to port xxxxx
 address already in use
 ```
 You are trying to start server on busy tcp port. Change port number in `config.lua` (just try to increment
-existing by 1).
+existing by 1)
 ```lua
 local port = 46846
 ```
@@ -58,6 +58,14 @@ $ systemctl --user status clipnetsync-server.service
 ```
 You probably set `forktobg = false` in `config.lua` and `Type=forking` in systemd unit. See [Daemonize][].
 You should set one of two things: `forktobg = false` and `Type=simple` or `forktobg = true` and `Type=forking`. 
+
+### other issues 
+You can switch off daemon and on debug mode in `config.lua` to watch program behaviour
+```lua
+local forktobg = false
+local debug    = true
+```
+If you still have a problems [welcome][Issues].
 
 
 ## TODO
@@ -76,3 +84,4 @@ You should set one of two things: `forktobg = false` and `Type=simple` or `forkt
 [Easy-RSA]: https://wiki.archlinux.org/index.php/Easy-RSA
 [systemd]: https://wiki.archlinux.org/index.php/Systemd 
 [Daemonize]: #Daemonize
+[Issues]: https://github.com/Kirill-Bugaev/clipnetsync/issues

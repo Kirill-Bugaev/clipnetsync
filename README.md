@@ -2,7 +2,7 @@
 
 Tiny Lua program that shares (synchronizes) X11 selections (clipboard) between remote hosts.
 
-It requires [lua-socket][lua-socket] and [xsel][xsel] installed. I use it with [Barrier][Barrier] and [Xpra][Xpra]
+It requires [lua-socket][lua-socket] and [xsel][xsel] installed. I realize it with [Barrier][Barrier] and [Xpra][Xpra]
 on my multihost system. App uses server-client model, so you should run `lua server.lua` on one host and
 `lua client.lua <server ip address>` on another. Config placed in `config.lua`. I recommend to switch off Barrier
 native clipboard sharing (but not Xpra yet) to avoid interference.
@@ -25,7 +25,7 @@ local forktobg = true
 
 ## Start once at boot
 I have written ugly systemd services for start at system boot. You can find it in `systemd` directory.
-How to manage systemd units see ArchWiki [systemd]:[systemd].
+How to manage systemd units see ArchWiki [systemd][systemd].
 If you gonna to use it change `WorkingDirectory` entry to path where this app placed on your system
 (I have created NFS share on my system, so all hosts run the same copy of app). For daemon mode set
 `Type=forking`. Another entry which you could wanna to change is `Environment=DISPLAY=:0`. E.g. if you

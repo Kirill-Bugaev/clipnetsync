@@ -28,7 +28,7 @@ I have written ugly systemd services for start at system boot. You can find it i
 How to manage systemd units see ArchWiki [systemd][].
 If you gonna to use it change `WorkingDirectory` entry to path where this app placed on your system
 (I have created NFS share on my system, so all hosts run the same copy of app). For daemon mode
-(if you done what said in [Daemonize][]) set `Type=forking`. Another entry which you could wanna to change
+(if you done what said in [Daemonize][Daemonize]) set `Type=forking`. Another entry which you could wanna to change
 is `Environment=DISPLAY=:0`. E.g. if you run this app on virtual machine with VNC, you probably should
 set `Environment=DISPLAY=:1` (or what X11 `DISPLAY` your VNC uses). And of course you should change IP
 address in `ExecStart` entry of `clipnetsync-client.service` to IP address of machine where server module

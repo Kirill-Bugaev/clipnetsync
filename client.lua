@@ -1,37 +1,73 @@
 local socket  = require "socket"
---local ssl     = require "ssl"
 local common = require "common"
 
-local port, connto, loopto, tls_params, sel = require("config")()
-tls_params.mode = "client"
+local port, connto, loopto, ssl, hsto, tls_params, sel, fork, debug = require("config")("client")
+
 local host = arg[1]
 
 -- connection loop
-local f, clipsave, conn, sslconn, clip, lb, em
+local f, clip, clipsave, conn, em, sslconn, hsres, lb
+local connstage = 0
 while 1 do
 	-- save current clipboard value
 	f = io.popen("xsel -o " .. sel, "r")
-	clipsave = f:read("*a")
+	clip = f:read("*a")
 	f:close()
+	if clip ~= clipsave then
+		if debug then print("local clipboard: " .. clip) end
+		clipsave = clip
+	end
 
 	-- try to connect
-	conn = socket.connect(host, port)
-	if not conn then goto reconn end
---	sslconn = ssl.wrap(conn, tls_params)
---	if not sslconn then goto closeconn end
---	conn = sslconn
---	conn:settimeout(connto)
---	if not conn:dohandshake() then goto closeconn end
+	conn, em = socket.connect(host, port)
+	if not conn then
+		if debug and connstage ~= 1 then
+			print(string.format("can't connect to %s:%d", host, port))
+			print(em)
+			connstage = 1
+		end
+		goto reconn
+	end
+	if ssl then
+		sslconn, em = ssl.wrap(conn, tls_params)
+		if not sslconn then
+			if debug and connstage ~= 2 then
+				print(string.format("can't establish secure connection with %s:%d", host, port))
+				print(em)
+				connstage = 2
+			end
+			goto closeconn
+		end
+		conn = sslconn
+		conn:settimeout(hsto)
+		hsres, em = conn:dohandshake()
+		if not hsres then
+			if debug and connstage ~= 3 then
+				print(string.format("can't do handshake with %s:%d", host, port))
+				print(em)
+				connstage = 3
+			end
+			goto closeconn
+		end
+		if debug then print(string.format("secure connection established with %s:%d", host, port)) end
+		conn:settimeout(connto)
+	else
+		if debug then print(string.format("insecure connection established with %s:%d", host, port)) end
+	end
+	connstage = 0
 
 	-- client loop
 	while 1 do
 		-- examine server
 		local r, _, to = socket.select({conn}, nil, connto)
 		if not to and r[1] then
+			if debug then print("receiving...") end
 			clip, em = common.receiveclip(conn)
 			if not clip and em == "closed" then
+				if debug then print("server closed connection") end
 				goto closeconn
 			elseif clip then
+				if debug then print("received clipboard: " .. clip) end
 				-- set clipboard
 				clipsave = clip
 				f = io.popen("xsel -i " .. sel, "w")
@@ -45,9 +81,15 @@ while 1 do
 		clip = f:read("*a")
 		f:close()
 		if clip ~= "" and clip ~= clipsave then
+			if debug then print("clipboard changed locally: " .. clip) end
 			clipsave = clip
+			if debug then print("sending...") end
 			lb, em = common.sendclip(conn, clip)
-			if not lb and em == "closed" then goto closeconn end
+			if not lb and em == "closed" then
+				if debug then print("server closed connection") end
+				goto closeconn
+			end
+			if debug then print("sent") end
 		end
 
 		socket.sleep(loopto)

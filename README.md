@@ -2,10 +2,14 @@
 It requires [lua-socket][lua-socket] and [xsel][xsel] installed. I use it with [Barrier][Barrier] and [Xpra][Xpra]
 on my multihost system. If you are going to use it in secure mode (of course you should) then install
 [lua-sec][lua-sec], create PKI (see ArchWiki [Easy-RSA][Easy-RSA] how to do this) and move generated keys and
-certificates to `./certs` directory (here are mine by default, replace it).
-I recommend to switch off Barrier native clipboard sharing (but not Xpra yet) to avoid interference.
+certificates to `./certs` directory (there are mine by default, replace it).
+
 App uses server-client model, so you should run `lua server.lua` on one host and `lua client.lua <server ip address>` on another.
-Config placed in `config.lua`. Enjoy.
+Config placed in `config.lua`.
+
+I recommend to switch off Barrier native clipboard sharing (but not Xpra yet) to avoid interference.
+
+Enjoy.
 
 ![My home multihost system](https://github.com/Kirill-Bugaev/clipnetsync/blob/master/screenshots/my-home-system.jpg)
 

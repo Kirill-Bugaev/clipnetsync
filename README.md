@@ -48,6 +48,18 @@ existing by 1).
 local port = 46846
 ```
 
+### wrong systemd service Type
+```shell
+$ systemctl --user status clipnetsync-server.service
+...
+... systemd[658]: clipnetsync-server.service: Control process exited, code=killed, status=15/TERM
+... systemd[658]: clipnetsync-server.service: Failed with result 'timeout'.
+... systemd[658]: Failed to start share X11 clipboard between remote hosts.
+```
+You probably set `forktobg = false` in `config.lua` and `Type=forking` in systemd unit. It's wrong.
+You should set one of two things: `forktobg = false` and `Type=simple` or `forktobg = true` and `Type=forking`. 
+
+
 ## TODO
 * replace xsel by native clipboard routine
 * add clipboard sharing for all X-DISPLAYS

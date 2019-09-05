@@ -17,10 +17,10 @@ Enjoy.
 ![My home multihost system](https://github.com/Kirill-Bugaev/clipnetsync/blob/master/screenshots/my-home-system.jpg)
 
 ## TODO
+* replace xsel by native clipboard routine
 * add clipboard sharing for all X-DISPLAYS
 * add daemon mode
 * add man
-* replace xsel by native clipboard routine
 * add Windows support
 * make AUR package
 

@@ -65,7 +65,7 @@ You can switch off daemon and on debug mode in `config.lua` to watch program beh
 local forktobg = false
 local debug    = true
 ```
-If you still have a problems [welcome][Issues].
+If you still have problems [welcome][New issues].
 
 
 ## TODO
@@ -84,4 +84,4 @@ If you still have a problems [welcome][Issues].
 [Easy-RSA]: https://wiki.archlinux.org/index.php/Easy-RSA
 [systemd]: https://wiki.archlinux.org/index.php/Systemd 
 [Daemonize]: #Daemonize
-[Issues]: https://github.com/Kirill-Bugaev/clipnetsync/issues
+[New issues]: https://github.com/Kirill-Bugaev/clipnetsync/issues/new

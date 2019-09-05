@@ -56,7 +56,7 @@ $ systemctl --user status clipnetsync-server.service
 ... systemd[658]: clipnetsync-server.service: Failed with result 'timeout'.
 ... systemd[658]: Failed to start share X11 clipboard between remote hosts.
 ```
-You probably set `forktobg = false` in `config.lua` and `Type=forking` in systemd unit. It's wrong.
+You probably set `forktobg = false` in `config.lua` and `Type=forking` in systemd unit. See [Daemonize][].
 You should set one of two things: `forktobg = false` and `Type=simple` or `forktobg = true` and `Type=forking`. 
 
 

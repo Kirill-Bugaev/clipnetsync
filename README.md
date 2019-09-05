@@ -1,4 +1,6 @@
 # clipnetsync
+Tiny Lua program that share (synchronize) X11 selections (clipboard) between remote hosts.
+
 It requires [lua-socket][lua-socket] and [xsel][xsel] installed. I use it with [Barrier][Barrier] and [Xpra][Xpra]
 on my multihost system. If you are going to use it in secure mode (of course you should) then install
 [lua-sec][lua-sec], create PKI (see ArchWiki [Easy-RSA][Easy-RSA] how to do this) and move generated keys and

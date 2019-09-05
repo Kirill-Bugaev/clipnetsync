@@ -1,0 +1,16 @@
+[Unit]
+Description=share X11 clipboard between remote hosts
+Requires=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+#Type=forking
+Environment=DISPLAY=:0
+WorkingDirectory=/data/projects/clipnetsync
+ExecStart=/usr/bin/lua server.lua
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

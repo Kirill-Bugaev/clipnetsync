@@ -1,4 +1,4 @@
-local port              = 46843                -- server tcp port
+local port              = 46845                -- server tcp port
 local connto            = 0.1                  -- connection/send/receive timeout (sec)
 local loopto            = 0.5                  -- main loop (before reconnect, update clipboard) timeout (sec)
 local ssl                                      -- when tls switched off it is insecure, you should install lua-sec and
@@ -23,7 +23,7 @@ local client_tls_params = {
 	options               = {"all", "no_sslv3"}
 }
 local sel               = "--primary"          -- X11 selection: --primary, --secondary or --clipboard for xsel
-local forktobg          = false                -- fork to background after start (no works yet)
+local forktobg          = false                -- fork to background after start
 local debug             = false                -- debug (verbose) mode
 
 local function factory(mode)

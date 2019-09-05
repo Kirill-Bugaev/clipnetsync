@@ -73,7 +73,6 @@ If you still have problems [welcome][New issues].
 * add clipboard sharing for all X-DISPLAYS
 * add man
 * make AUR package
-* add Windows support
 
 [lua-socket]: https://www.archlinux.org/packages/community/x86_64/lua-socket/
 [lua-sec]: https://www.archlinux.org/packages/community/x86_64/lua-sec/

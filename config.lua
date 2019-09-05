@@ -3,7 +3,7 @@ local connto            = 0.1                  -- connection/send/receive timeou
 local loopto            = 0.5                  -- main loop (before reconnect, update clipboard) timeout (sec)
 local ssl                                      -- when tls switched off it is insecure, you should install lua-sec and
 pcall(function() ssl    = require "ssl" end)   -- create PKI (see https://wiki.archlinux.org/index.php/Easy-RSA)
-local hsto              = 5                    -- tls handshake timeout
+local hsto              = 5                    -- tls handshake timeout (sec)
 local server_tls_params = {
 	mode                  = "server",
 	protocol              = "tlsv1_2",

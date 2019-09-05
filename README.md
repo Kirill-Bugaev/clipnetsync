@@ -34,6 +34,20 @@ set `Environment=DISPLAY=:1` (or what X11 `DISPLAY` your VNC uses). And of cours
 address in `ExecStart` entry of `clipnetsync-client.service` to IP address of machine where server module
 of this app runs.
 
+## Troubleshooting
+
+### busy tcp port
+```shell
+$ lua server.lua
+can't bind socket to port xxxxx
+address already in use
+```
+You are trying to start server on busy tcp port. Change port number in `config.lua` (just try to increment
+existing by 1).
+```lua
+local port = 46846
+```
+
 ## TODO
 * replace xsel by native clipboard routine
 * add clipboard sharing for all X-DISPLAYS

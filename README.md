@@ -2,8 +2,8 @@
 
 Tiny Lua program that shares (synchronizes) X11 selections (clipboard) between remote hosts.
 
-It requires [lua-socket][] and [xsel][] installed. I realize it with [Barrier][] and [Xpra][]
-on my multihost system. App uses server-client model, so you should run `lua server.lua` on one host and
+It requires [lua-socket][] and [xsel][] installed. I use it with [Barrier][] and [Xpra][]
+on my multihost system. App realize server-client model, so you should run `lua server.lua` on one host and
 `lua client.lua <server ip address>` on another. Config placed in `config.lua`. I recommend to switch off Barrier
 native clipboard sharing (but not Xpra yet) to avoid interference.
 

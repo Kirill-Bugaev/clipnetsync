@@ -1,4 +1,5 @@
 # clipnetsync
+
 Tiny Lua program that shares (synchronizes) X11 selections (clipboard) between remote hosts.
 
 It requires [lua-socket][lua-socket] and [xsel][xsel] installed. I use it with [Barrier][Barrier] and [Xpra][Xpra]
@@ -18,6 +19,10 @@ Enjoy.
 ## TODO
 * add clipboard sharing for all X-DISPLAYS
 * add daemon mode
+* add man
+* replace xsel by native clipboard routine
+* add Windows support
+* make AUR package
 
 [lua-socket]: https://www.archlinux.org/packages/community/x86_64/lua-socket/
 [lua-sec]: https://www.archlinux.org/packages/community/x86_64/lua-sec/

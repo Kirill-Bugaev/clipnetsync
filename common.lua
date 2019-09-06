@@ -25,7 +25,7 @@ end
 -- escape all lines with '*', add '*' to the end (end of data mark)
 local function sendclip(socket, clip)
 	clip = "*" .. clip
-	clip:gsub("\n", "\n*")
+	clip = clip:gsub("[\n\r]", "%1*")
 	clip = clip .. "\n*\n"
 	return socket:send(clip) -- try to send at one go
 end

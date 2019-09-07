@@ -22,10 +22,10 @@ local function forktobg()
 	return true
 end
 
--- escape all lines with '*', add '*' to the end (end of data mark)
+-- escape all lines with '#', add '\n*' to the end (end of data mark)
 local function sendclip(socket, clip)
 	clip = "*" .. clip
-	clip = clip:gsub("\n", "%1*")
+	clip = clip:gsub("\n", "%1#")
 	clip = clip .. "\n*\n"
 	return socket:send(clip) -- try to send at one go
 end

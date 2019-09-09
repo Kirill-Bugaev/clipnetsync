@@ -139,7 +139,7 @@ while 1 do
 	f = io.popen("xsel -o " .. sel, "r")
 	clip = f:read("*a")
 	f:close()
-	if clip ~= "" and clip ~= clipsave then
+	if clip ~= clipsave then
 		if debug then print(dpre .. "clipboard changed locally: " .. clip) end
 		clipsave = clip
 		spread(clip, clients, peers)

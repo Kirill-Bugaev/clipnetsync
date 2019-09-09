@@ -75,6 +75,15 @@ while 1 do
 	end
 	connstage = 0
 
+	-- send clipboard on connect
+	if debug then print(dpre .. "sending...") end
+	lb, em = common.sendclip(conn, clip)
+	if not lb and em == "closed" then
+		if debug then print(dpre .. "server closed connection") end
+		goto closeconn
+	end
+	if debug then print(dpre .. "sent") end
+
 	-- client loop
 	while 1 do
 		-- examine server
@@ -99,7 +108,7 @@ while 1 do
 		f = io.popen("xsel -o " .. sel, "r")
 		clip = f:read("*a")
 		f:close()
-		if clip ~= "" and clip ~= clipsave then
+		if clip ~= clipsave then
 			if debug then print(dpre .. "clipboard changed locally: " .. clip) end
 			clipsave = clip
 			if debug then print(dpre .. "sending...") end

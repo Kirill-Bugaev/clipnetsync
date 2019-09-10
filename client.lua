@@ -69,10 +69,10 @@ while 1 do
 			goto closeconn
 		end
 		if debug then print(dpre .. string.format("secure connection established with %s:%d", host, port)) end
-		conn:settimeout(connto)
 	else
 		if debug then print(dpre .. string.format("insecure connection established with %s:%d", host, port)) end
 	end
+	conn:settimeout(connto)
 	connstage = 0
 
 	-- send clipboard on connect

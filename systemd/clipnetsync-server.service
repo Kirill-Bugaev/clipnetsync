@@ -8,7 +8,7 @@ Type=simple
 #Type=forking
 Environment=DISPLAY=:0
 WorkingDirectory=/data/projects/clipnetsync
-ExecStart=/usr/bin/lua server.lua
+ExecStart=/usr/bin/lua clipnetsync-server.lua
 Restart=always
 RestartSec=10
 

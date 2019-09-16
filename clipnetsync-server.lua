@@ -1,22 +1,23 @@
+#!/usr/bin/env lua
+
 local socket  = require "socket"
 local common = require "common"
 
 local port, connto, loopto, ssl, hsto, tls_params, sel, fork, debug = require("config")("server")
-local dpre = ""
 
 -- spread clipboard value among clients
 local function spread(clip, clients, peers)
 	for k, c in pairs(clients) do
-		if debug then print(dpre .. string.format("sending to %s:%d ...", peers[k].ip, peers[k].port)) end
+		if debug then print(string.format("sending to %s:%d ...", peers[k].ip, peers[k].port)) end
 		local lb, em = common.sendclip(c, clip)
 		if not lb and em == "closed" then
-			if debug then print(dpre .. string.format("%s:%d closed connection", peers[k].ip, peers[k].port)) end
+			if debug then print(string.format("%s:%d closed connection", peers[k].ip, peers[k].port)) end
 			-- remove client
 			c:close()
 			table.remove(clients, k)
 			table.remove(peers, k)
 		else
-			if debug then print(dpre .. "sent") end
+			if debug then print("sent") end
 		end
 	end
 end
@@ -29,21 +30,18 @@ if fork then
 	local s, em = common.forktobg()
 	if s then
 		if debug then print("forked to background") end
-		dpre = "clipnetsync-server: "
 	else
-		if debug then
-			print("can't fork to background")
-			print(em)
-			print("stay foreground")
-		end
+		print("can't fork to background")
+		print(em)
+		print("stay foreground")
 	end
 end
 
 -- start server
 local server, em = socket.bind("*", port)
 if not server then
-	print(dpre .. "can't bind socket to port " .. port)
-	print(dpre .. em)
+	print("can't bind socket to port " .. port)
+	print(em)
 	os.exit(1)
 end
 server:settimeout(connto)
@@ -54,7 +52,7 @@ local peers = {}
 local f = io.popen("xsel -o " .. sel, "r")
 local clipsave = f:read("*a")
 f:close()
-if debug then print(dpre .. "local clipboard: " .. clipsave) end
+if debug then print("local clipboard: " .. clipsave) end
 
 -- main loop
 local c, pip, pport, sslc, hsres, clip, r, _, to
@@ -67,7 +65,7 @@ while 1 do
 
 	if not ssl then
 		-- add new client (insecure)
-		if debug then print(dpre .. string.format("insecure connection established with %s:%d", pip, pport)) end
+		if debug then print(string.format("insecure connection established with %s:%d", pip, pport)) end
 		c:settimeout(connto)
 		table.insert(clients, c)
 		table.insert(peers, {ip = pip, port = pport})
@@ -78,8 +76,8 @@ while 1 do
 	sslc, em = ssl.wrap(c, tls_params)
 	if not sslc then
 		if debug then
-			print(dpre .. string.format("can't establish secure connection with %s:%d", pip, pport))
-			print(dpre .. em)
+			print(string.format("can't establish secure connection with %s:%d", pip, pport))
+			print(em)
 		end
 		c:close()
 		goto examine
@@ -91,15 +89,15 @@ while 1 do
 	hsres, em = c:dohandshake()
 	if not hsres then
 		if debug then
-			print(dpre .. string.format("can't do handshake with %s:%d", pip, pport))
-			print(dpre .. em)
+			print(string.format("can't do handshake with %s:%d", pip, pport))
+			print(em)
 		end
 		c:close()
 		goto examine
 	end
 
 	-- add new client (secure)
-	if debug then print(dpre .. string.format("secure connection established with %s:%d", pip, pport)) end
+	if debug then print(string.format("secure connection established with %s:%d", pip, pport)) end
 	c:settimeout(connto)
 	table.insert(clients, c)
 	table.insert(peers, {ip = pip, port = pport})
@@ -120,7 +118,7 @@ while 1 do
 		end
 
 		if clip then
-			if debug then print(dpre .. "received clipboard: " .. clip) end
+			if debug then print("received clipboard: " .. clip) end
 			-- set clipboard
 			clipsave = clip
 			f = io.popen("xsel -i " .. sel, "w")
@@ -140,7 +138,7 @@ while 1 do
 	clip = f:read("*a")
 	f:close()
 	if clip ~= clipsave then
-		if debug then print(dpre .. "clipboard changed locally: " .. clip) end
+		if debug then print("clipboard changed locally: " .. clip) end
 		clipsave = clip
 		spread(clip, clients, peers)
 	end

@@ -59,6 +59,11 @@ $ systemctl --user status clipnetsync-server.service
 You probably set `forktobg = false` in `config.lua` and `Type=forking` in systemd unit. See [Daemonize][].
 You should set one of two things: `forktobg = false` and `Type=simple` or `forktobg = true` and `Type=forking`. 
 
+### "xsel -o ..." hangs on
+Sometimes [xsel][] hangs on output pipe. In this case clipnetsync hangs on too, because it reads from pipe in
+blocking mode. Killing `xsel -o ...` process solves the problem. I have added [poll][] pipe before read
+([lua-posix][] required). Hope this helps.
+
 ### other issues 
 You can switch off daemon and on debug mode in `config.lua` to watch program behaviour
 ```lua
@@ -83,4 +88,5 @@ If you still have problems [welcome][New issues].
 [Easy-RSA]: https://wiki.archlinux.org/index.php/Easy-RSA
 [systemd]: https://wiki.archlinux.org/index.php/Systemd 
 [Daemonize]: #Daemonize
+[poll]: https://luaposix.github.io/luaposix/modules/posix.poll.html#poll
 [New issues]: https://github.com/Kirill-Bugaev/clipnetsync/issues/new

@@ -26,6 +26,27 @@ local function forktobg()
 	return true
 end
 
+-- get current clipboard value,
+local function getcurclip(sel, posix, to)
+	local clip
+	local f = io.popen("xsel -o " .. sel, "r")
+	-- use non-blocking read if possible
+	if posix ~= nil then
+		local fd = posix.stdio.fileno(f)
+		local fds = { [fd] = { events = { IN = true } } }
+		local res = posix.poll(fds, to)
+		if res == 1 then
+			clip = f:read("*a")
+		else
+			clip = ""
+		end
+	else
+		clip = f:read("*a")
+	end
+	f:close()
+	return clip
+end
+
 -- escape all lines with '#', add '\n*' to the end (end of data mark)
 local function sendclip(socket, clip)
 	clip = "#" .. clip
@@ -48,4 +69,4 @@ local function receiveclip(socket)
 	return out
 end
 
-return {tlswarn = tlswarn, forktobg = forktobg, receiveclip = receiveclip, sendclip = sendclip}
+return {tlswarn = tlswarn, forktobg = forktobg, getcurclip = getcurclip, receiveclip = receiveclip, sendclip = sendclip}

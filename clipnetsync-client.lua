@@ -3,7 +3,7 @@
 local socket  = require "socket"
 local common = require "common"
 
-local port, connto, loopto, ssl, hsto, tls_params, sel, fork, debug = require("config")("client")
+local port, connto, loopto, ssl, hsto, tls_params, sel, posix, xsel_out_to, fork, debug = require("config")("client")
 
 local host = arg[1]
 
@@ -27,9 +27,7 @@ local f, clip, clipsave, conn, em, sslconn, hsres, lb
 local connstage = 0
 while 1 do
 	-- save current clipboard value
-	f = io.popen("xsel -o " .. sel, "r")
-	clip = f:read("*a")
-	f:close()
+	clip = common.getcurclip(sel, posix, xsel_out_to)
 	if clip ~= clipsave then
 		if debug then print("local clipboard: " .. clip) end
 		clipsave = clip
@@ -103,9 +101,7 @@ while 1 do
 		end
 
 		-- check local clipboard
-		f = io.popen("xsel -o " .. sel, "r")
-		clip = f:read("*a")
-		f:close()
+		clip = common.getcurclip(sel, posix, xsel_out_to)
 		if clip ~= clipsave then
 			if debug then print("clipboard changed locally: " .. clip) end
 			clipsave = clip

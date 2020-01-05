@@ -3,7 +3,7 @@
 local socket  = require "socket"
 local common = require "common"
 
-local port, connto, loopto, ssl, hsto, tls_params, sel, fork, debug = require("config")("server")
+local port, connto, loopto, ssl, hsto, tls_params, sel, posix, xsel_out_to, fork, debug = require("config")("server")
 
 -- spread clipboard value among clients
 local function spread(clip, clients, peers)
@@ -49,9 +49,7 @@ local clients = {}
 local peers = {}
 
 -- save current clipboard value
-local f = io.popen("xsel -o " .. sel, "r")
-local clipsave = f:read("*a")
-f:close()
+local clipsave = common.getcurclip(sel, posix, xsel_out_to)
 if debug then print("local clipboard: " .. clipsave) end
 
 -- main loop
@@ -121,6 +119,7 @@ while 1 do
 			if debug then print("received clipboard: " .. clip) end
 			-- set clipboard
 			clipsave = clip
+			local f
 			f = io.popen("xsel -i " .. sel, "w")
 			f:write(clip)
 			f:close()
@@ -134,9 +133,7 @@ while 1 do
 
 	-- check local clipboard
 	::checkcb::
-	f = io.popen("xsel -o " .. sel, "r")
-	clip = f:read("*a")
-	f:close()
+	clip = common.getcurclip(sel, posix, xsel_out_to)
 	if clip ~= clipsave then
 		if debug then print("clipboard changed locally: " .. clip) end
 		clipsave = clip

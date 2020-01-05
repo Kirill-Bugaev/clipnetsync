@@ -23,8 +23,11 @@ local client_tls_params = {
 	options               = {"all", "no_sslv3"}
 }
 local sel               = "--primary"          -- X11 selection: --primary, --secondary or --clipboard for xsel
+local posix																		 -- we use posix.poll for non-blocking read,
+pcall(function() posix  = require "posix" end) -- cause "xsel -o ..." hangs on sometimes
+local xsel_out_to       = 1000                 -- time (ms) to wait xsel output before close pipe
 local forktobg          = false                -- fork to background after start
-local debug             = false                -- debug (verbose) mode
+local debug             = true                -- debug (verbose) mode
 
 local function factory(mode)
 	local tls_params
@@ -33,7 +36,7 @@ local function factory(mode)
 	elseif mode == "client" then
 		tls_params = client_tls_params
 	end
-	return port, connto, loopto, ssl, hsto, tls_params, sel, forktobg, debug
+	return port, connto, loopto, ssl, hsto, tls_params, sel, posix, xsel_out_to, forktobg, debug
 end
 
 return factory

@@ -1,3 +1,5 @@
+local helper  = require "helper"
+
 local function tlswarn()
 	print("Warning! Started without TLS.")
 	print("Using it without TLS is insecure.")
@@ -26,25 +28,92 @@ local function forktobg()
 	return true
 end
 
--- get current clipboard value,
+-- get current clipboard value
 local function getcurclip(sel, posix, to)
-	local clip
-	local f = io.popen("xsel -o " .. sel, "r")
-	-- use non-blocking read if possible
-	if posix ~= nil then
-		local fd = posix.stdio.fileno(f)
-		local fds = { [fd] = { events = { IN = true } } }
-		local res = posix.poll(fds, to)
-		if res == 1 then
-			clip = f:read("*a")
-		else
-			clip = ""
-		end
-	else
-		clip = f:read("*a")
+	local rd, wd = posix.pipe()
+	if rd == nil then
+		return nil, wd
 	end
-	f:close()
-	return clip
+
+	local clip = nil
+
+	local pid, em = posix.fork()
+	if pid == nil then
+		goto finish
+	end
+
+	if pid == 0 then
+		-- child
+		posix.close(rd)
+
+		-- redirect stdout to pipe
+		if posix.dup2(wd, posix.fileno(io.stdout)) == nil then
+			os.exit(2)
+		end
+
+		posix.exec("/usr/bin/xsel", {[0] = "-o", sel})
+
+		-- failed to execute
+		os.exit(3)
+	else
+		-- parent
+		posix.close(wd)
+
+		-- set non-blocking read for pipe
+		local flags
+		flags, em = posix.fcntl(rd, posix.F_GETFL)
+		if flags == nil then
+			posix.kill(pid, posix.SIGINT)
+			goto finish
+		end
+		local res
+		res, em = posix.fcntl(rd, posix.F_SETFL, flags | posix.O_NONBLOCK)
+		if res == nil then
+			posix.kill(pid, posix.SIGINT)
+			goto finish
+		end
+
+		-- wait xsel output on pipe
+		local fds = { [rd] = { events = { IN = true } } }
+		res, em = posix.poll(fds, to)
+		if res == 1 then
+			-- pipe is ready for read, get child terminate status,
+			-- data on pipe appears only after child process terminates
+			-- so can call wait without WNOHANG
+			local _, _, status = posix.wait(pid)
+			if status == 0 then
+				-- xsel exited normally, get xsel output
+				-- don't make lua file from pipe descriptor by posix.fdopen(rd, "r")!
+				-- lua file should be closed individually, but if we will close it here,
+				-- then posix.close() at the end of function will try to close already closed pipe
+				clip = helper.freadall(rd, posix)
+			elseif status == 1 then
+				em = "xsel exited with error"
+			elseif status == 2 then
+				em = "failed to redirect child process stdout to pipe"
+			elseif status == 3 then
+				em = "failed to execute xsel (is installed?)"
+			else
+				em = "child process failed with code = " .. status
+			end
+		else
+			-- something wrong: child process hangs on or can't poll pipe
+			-- kill child (or zombie)
+			local kres = posix.kill(pid, posix.SIGINT)
+			if res == 0 then
+				em = "child process (xsel, probably) hangs on, "
+				if kres ~= 0 then
+					-- failed kill
+					em = em .. "not "
+				end
+				em = em .. "killed"
+			end
+		end
+	end
+
+	::finish::
+	posix.close(rd)
+	return clip, em
 end
 
 -- escape all lines with '#', add '\n*' to the end (end of data mark)

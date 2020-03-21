@@ -3,7 +3,7 @@
 local socket  = require "socket"
 local common = require "common"
 
-local port, connto, loopto, ssl, hsto, tls_params, sel, posix, xsel_out_to, fork, debug = require("config")("server")
+local port, connto, loopto, ssl, hsto, tls_params, sel, posix, xsel_to, fork, debug = require("config")("server")
 
 -- spread clipboard value among clients
 local function spread(clip, clients, peers)
@@ -49,7 +49,11 @@ local clients = {}
 local peers = {}
 
 -- save current clipboard value
-local clipsave = common.getcurclip(sel, posix, xsel_out_to)
+local clipsave
+repeat
+	clipsave, em = common.getcurclip(sel, posix, xsel_to)
+	if debug and clipsave == nil then print("can't obtain local clipboard: " .. em) end
+until clipsave ~= nil
 if debug then print("local clipboard: " .. clipsave) end
 
 -- main loop
@@ -133,7 +137,11 @@ while 1 do
 
 	-- check local clipboard
 	::checkcb::
-	clip = common.getcurclip(sel, posix, xsel_out_to)
+	repeat
+		clip, em = common.getcurclip(sel, posix, xsel_to)
+		if debug and clip == nil then print("can't obtain local clipboard: " .. em) end
+	until clip ~= nil
+
 	if clip ~= clipsave then
 		if debug then print("clipboard changed locally: " .. clip) end
 		clipsave = clip
